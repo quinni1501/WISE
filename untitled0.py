@@ -5,7 +5,7 @@ Created on Fri Nov 15 20:00:42 2024
 @author: ADMIN
 """
 # d4:01:c3:2f:d3:dc
-from scapy.all import ARP, sniff, send
+from scapy.all import ARP, sniff, send # Thư viện Scapy để bắt và gửi gói tin mạng
 import ctypes  # Dùng để hiển thị message box trên Windows
 
 # Tạo bảng ARP tĩnh (IP và MAC thật)
@@ -13,9 +13,11 @@ ARP_TABLE = {}
 
 def detect_and_fix_arp_spoof(pkt):
     """Phát hiện ARP Spoofing và thực hiện khắc phục"""
+    
+    # Kiểm tra nếu gói tin là ARP và loại là ARP Reply
     if pkt.haslayer(ARP) and pkt[ARP].op == 2:  # ARP reply
-        ip_src = pkt[ARP].psrc
-        mac_src = pkt[ARP].hwsrc
+        ip_src = pkt[ARP].psr       # Lấy IP nguồn từ gói tin ARP
+        mac_src = pkt[ARP].hwsrc    # Lấy MAC nguồn từ gói tin ARP
 
         # Nếu IP đã biết nhưng MAC khác
         if ip_src in ARP_TABLE and mac_src != ARP_TABLE[ip_src]:
